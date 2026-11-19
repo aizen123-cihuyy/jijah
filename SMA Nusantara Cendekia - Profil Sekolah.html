@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>SMA Nusantara Cendekia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Figtree:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              d: ['"Bricolage Grotesque"', "Georgia", "sans-serif"],
+              b: ["Figtree", "system-ui", "sans-serif"],
+            },
+            colors: {
+              bg: "var(--bg)",
+              ink: "var(--ink)",
+              card: "var(--card)",
+              tang: "#ff7a1a",
+              pink: "#ff8fc7",
+              lemon: "#ffe45c",
+              mint: "#7ee8c7",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --bg: #eef0ff;
+        --ink: #1b1464;
+        --card: #ffffff;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #151042;
+          --ink: #eef0ff;
+          --card: #241c70;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #151042;
+        --ink: #eef0ff;
+        --card: #241c70;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+        color-scheme: light dark;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Figtree, system-ui, sans-serif;
+        overflow-x: hidden;
+        background-image: radial-gradient(
+          color-mix(in srgb, var(--ink) 14%, transparent) 1.3px,
+          transparent 1.3px
+        );
+        background-size: 22px 22px;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0 0 auto;
+        height: env(safe-area-inset-top, 0px);
+        z-index: 60;
+        background: var(--bg);
+      }
+      .pop {
+        border: 2.5px solid var(--ink);
+        box-shadow: 6px 6px 0 var(--ink);
+        background: var(--card);
+      }
+      .pop-s {
+        border: 2.5px solid var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+      .lift {
+        transition:
+          transform 0.18s,
+          box-shadow 0.18s;
+      }
+      .lift:hover {
+        transform: translate(-3px, -3px);
+        box-shadow: 9px 9px 0 var(--ink);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        padding: 0.8rem 1.4rem;
+        border-radius: 999px;
+        border: 2.5px solid var(--ink);
+        box-shadow: 4px 4px 0 var(--ink);
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+        color: #1b1464;
+      }
+      .btn:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 var(--ink);
+      }
+      .btn:focus-visible,
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid #ff7a1a;
+        outline-offset: 3px;
+      }
+      .dark-ink {
+        color: #1b1464;
+      }
+      .marquee {
+        display: flex;
+        width: max-content;
+        animation: mq 28s linear infinite;
+      }
+      @keyframes mq {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      .page {
+        display: none;
+      }
+      .page.on {
+        display: block;
+      }
+      .chip.on {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .masonry {
+        columns: 1;
+        column-gap: 1.25rem;
+      }
+      @media (min-width: 640px) {
+        .masonry {
+          columns: 2;
+        }
+      }
+      @media (min-width: 1024px) {
+        .masonry {
+          columns: 3;
+        }
+      }
+      .masonry > * {
+        break-inside: avoid;
+        margin-bottom: 1.25rem;
+      }
+      .navlink.on {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .stripe {
+        background-image: repeating-linear-gradient(
+          135deg,
+          transparent 0 10px,
+          rgba(27, 20, 100, 0.12) 10px 12px
+        );
+      }
+      .tline::before {
+        content: "";
+        position: absolute;
+        left: 19px;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--ink);
+      }
+      .org-line {
+        position: relative;
+      }
+      .org-line::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -1.5rem;
+        height: 1.5rem;
+        width: 3px;
+        background: var(--ink);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .marquee {
+          animation: none;
+        }
+        * {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="font-b antialiased">
+    <!-- NAV -->
+    <header
+      class="sticky z-50 px-3 sm:px-6 pt-3"
+      style="top: env(safe-area-inset-top, 0px)"
+    >
+      <nav
+        class="pop rounded-full max-w-6xl mx-auto flex items-center justify-between px-3 py-2"
+      >
+        <a
+          href="#beranda"
+          class="flex items-center gap-2 font-d font-extrabold text-lg"
+        >
+          <span
+            class="grid place-items-center w-9 h-9 rounded-full bg-tang border-2 border-ink dark-ink"
+            >N</span
+          >
+          <span class="hidden sm:block">Nusantara Cendekia</span>
+        </a>
+        <div id="links" class="hidden md:flex gap-1 text-sm font-bold">
+          <a class="navlink px-4 py-2 rounded-full" href="#beranda">Beranda</a>
+          <a class="navlink px-4 py-2 rounded-full" href="#struktur"
+            >Struktur</a
+          >
+          <a class="navlink px-4 py-2 rounded-full" href="#galeri">Galeri</a>
+          <a class="navlink px-4 py-2 rounded-full" href="#kontak">Kontak</a>
+        </div>
+        <button
+          id="burger"
+          class="md:hidden w-10 h-10 rounded-full border-2 border-ink grid place-items-center"
+          aria-label="Buka menu"
+          aria-expanded="false"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </nav>
+      <div
+        id="mobmenu"
+        class="hidden md:hidden pop rounded-3xl mt-3 p-3 max-w-6xl mx-auto grid gap-1 font-bold"
+      >
+        <a class="navlink px-4 py-3 rounded-2xl" href="#beranda">Beranda</a>
+        <a class="navlink px-4 py-3 rounded-2xl" href="#struktur">Struktur</a>
+        <a class="navlink px-4 py-3 rounded-2xl" href="#galeri">Galeri</a>
+        <a class="navlink px-4 py-3 rounded-2xl" href="#kontak">Kontak</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ BERANDA ============ -->
+      <section id="beranda" class="page">
+        <div
+          class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-6 grid lg:grid-cols-12 gap-8 items-center"
+        >
+          <div class="lg:col-span-7">
+            <span
+              class="h-in inline-block bg-lemon dark-ink font-bold px-4 py-1.5 rounded-full pop-s -rotate-2"
+              >Pendaftaran 2027 sudah dibuka</span
+            >
+            <h1
+              class="h-in font-d font-extrabold leading-[.92] tracking-tight text-[clamp(2.8rem,8.5vw,6.6rem)] mt-5"
+            >
+              Sekolah yang bikin kamu
+              <span
+                class="inline-block bg-pink dark-ink px-3 rounded-2xl rotate-1 border-[3px] border-ink"
+                >berani</span
+              >
+              mencoba.
+            </h1>
+            <p class="h-in text-lg sm:text-xl max-w-xl mt-6 opacity-90">
+              Di SMA Nusantara Cendekia, ruang kelas bertemu laboratorium,
+              studio, dan lapangan. Belajar serius, tapi tidak membosankan.
+            </p>
+            <div class="h-in flex flex-wrap gap-4 mt-8">
+              <a href="#kontak" class="btn bg-tang">Daftar sekarang</a>
+              <a href="#galeri" class="btn bg-card" style="color: var(--ink)"
+                >Lihat galeri sekolah</a
+              >
+            </div>
+          </div>
+          <div class="lg:col-span-5 relative h-[430px] sm:h-[480px]">
+            <div
+              class="h-card pop absolute top-0 right-2 w-60 rounded-3xl p-5 rotate-3 bg-mint"
+              style="background: #7ee8c7; color: #1b1464"
+            >
+              <p class="font-bold text-sm">Sekarang di sekolah</p>
+              <p id="clockTime" class="font-d font-extrabold text-5xl mt-1">
+                --:--
+              </p>
+              <p
+                id="clockInfo"
+                class="text-sm font-bold mt-2 bg-white/70 rounded-xl px-3 py-2"
+              >
+                Memuat jadwal...
+              </p>
+            </div>
+            <div
+              class="h-card pop absolute top-40 left-0 w-56 rounded-[2rem] p-5 -rotate-6 stripe"
+              style="background-color: #ff8fc7; color: #1b1464"
+            >
+              <p class="font-d font-extrabold text-6xl leading-none">A</p>
+              <p class="font-bold mt-1">Akreditasi unggul sejak 2014</p>
+            </div>
+            <div
+              class="h-card pop absolute bottom-0 right-0 w-64 rounded-3xl p-5 rotate-2"
+              style="background: #ffe45c; color: #1b1464"
+            >
+              <p class="font-bold text-sm">Juara Nasional</p>
+              <p class="font-d font-extrabold text-xl leading-tight mt-1">
+                Olimpiade Sains Terapan 2026
+              </p>
+              <div class="flex gap-1 mt-3 text-2xl">🏆🔬✨</div>
+            </div>
+            <div
+              class="h-card absolute bottom-10 left-6 w-24 h-24 rounded-full bg-tang border-[3px] border-ink grid place-items-center text-4xl animate-bounce"
+              style="animation-duration: 3s"
+            >
+              🎒
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="bg-ink text-bg py-4 border-y-[3px] border-ink my-10 -rotate-1 overflow-hidden"
+          style="background: var(--ink); color: var(--bg)"
+        >
+          <div
+            class="marquee font-d font-extrabold text-2xl sm:text-3xl gap-10 whitespace-nowrap"
+            id="mq"
+          ></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+          <div id="stats" class="grid grid-cols-2 lg:grid-cols-4 gap-5"></div>
+
+          <h2
+            class="font-d font-extrabold text-4xl sm:text-6xl mt-24 leading-none max-w-3xl"
+          >
+            Enam jalur untuk menemukan bakatmu
+          </h2>
+          <div class="grid md:grid-cols-6 gap-5 mt-8">
+            <article
+              class="pop lift md:col-span-3 rounded-[2rem] p-7 relative overflow-hidden"
+              style="background: #ff7a1a; color: #1b1464"
+            >
+              <span class="text-6xl">🔬</span>
+              <h3 class="font-d font-extrabold text-3xl mt-4">
+                Sains dan Riset
+              </h3>
+              <p class="mt-2 max-w-sm">
+                Laboratorium modern, klub riset, dan mentor dari kampus mitra.
+              </p>
+            </article>
+            <article
+              class="pop lift md:col-span-3 rounded-[2rem] p-7"
+              style="background: #7ee8c7; color: #1b1464"
+            >
+              <span class="text-6xl">💻</span>
+              <h3 class="font-d font-extrabold text-3xl mt-4">
+                Teknologi dan Koding
+              </h3>
+              <p class="mt-2 max-w-sm">
+                Dari dasar pemrograman sampai membuat aplikasi untuk desa
+                sekitar.
+              </p>
+            </article>
+            <article
+              class="pop lift md:col-span-2 rounded-[2rem] p-6"
+              style="background: #ff8fc7; color: #1b1464"
+            >
+              <span class="text-5xl">🎨</span>
+              <h3 class="font-d font-extrabold text-2xl mt-3">
+                Seni dan Desain
+              </h3>
+              <p class="mt-1 text-sm">Studio gambar, musik, dan film pendek.</p>
+            </article>
+            <article
+              class="pop lift md:col-span-2 rounded-[2rem] p-6"
+              style="background: #ffe45c; color: #1b1464"
+            >
+              <span class="text-5xl">⚽</span>
+              <h3 class="font-d font-extrabold text-2xl mt-3">Olahraga</h3>
+              <p class="mt-1 text-sm">
+                Futsal, voli, panahan, dan silat dengan pelatih bersertifikat.
+              </p>
+            </article>
+            <article class="pop lift md:col-span-2 rounded-[2rem] p-6">
+              <span class="text-5xl">🌏</span>
+              <h3 class="font-d font-extrabold text-2xl mt-3">
+                Bahasa dan Budaya
+              </h3>
+              <p class="mt-1 text-sm">
+                Inggris, Mandarin, Jepang, plus kelas budaya Jawa.
+              </p>
+            </article>
+          </div>
+
+          <div class="grid lg:grid-cols-5 gap-6 mt-24">
+            <div class="pop lg:col-span-3 rounded-[2rem] p-7 sm:p-10 relative">
+              <span
+                class="font-d font-extrabold text-[7rem] leading-none absolute -top-4 right-6 text-tang"
+                >”</span
+              >
+              <h2 class="font-d font-extrabold text-3xl sm:text-4xl">
+                Sambutan Kepala Sekolah
+              </h2>
+              <p class="mt-5 text-lg leading-relaxed max-w-prose">
+                Anak-anak kami tidak hanya dinilai dari angka di rapor. Kami
+                ingin mereka lulus dengan rasa ingin tahu yang masih menyala,
+                mau bekerja sama, dan punya keberanian untuk gagal lalu mencoba
+                lagi.
+              </p>
+              <div class="flex items-center gap-4 mt-6">
+                <div
+                  class="w-14 h-14 rounded-full bg-pink border-[3px] border-ink grid place-items-center font-d font-extrabold dark-ink"
+                >
+                  HS
+                </div>
+                <div>
+                  <p class="font-bold">Dra. Hesti Sulistyowati, M.Pd.</p>
+                  <p class="text-sm opacity-75">Kepala Sekolah</p>
+                </div>
+              </div>
+            </div>
+            <div class="lg:col-span-2 grid gap-4" id="agenda"></div>
+          </div>
+
+          <div
+            class="pop rounded-[2.5rem] mt-24 p-8 sm:p-14 text-center relative overflow-hidden stripe"
+            style="background-color: #ffe45c; color: #1b1464"
+          >
+            <h2 class="font-d font-extrabold text-4xl sm:text-6xl leading-none">
+              Kursi terbatas, cerita kamu belum.
+            </h2>
+            <p class="mt-4 text-lg">Gelombang 1 ditutup 28 Februari 2027.</p>
+            <a
+              href="#kontak"
+              class="btn mt-7"
+              style="background: #1b1464; color: #ffe45c"
+              >Tanya panitia PPDB</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ STRUKTUR ============ -->
+      <section id="struktur" class="page">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-10">
+          <h1
+            class="font-d font-extrabold text-[clamp(2.8rem,8vw,6rem)] leading-[.92]"
+          >
+            Orang-orang di balik
+            <span
+              class="inline-block bg-mint dark-ink px-3 rounded-2xl -rotate-1 border-[3px] border-ink"
+              >sekolah</span
+            >
+            ini
+          </h1>
+          <p class="mt-5 text-lg max-w-xl opacity-90">
+            Struktur organisasi masa bakti 2025 sampai 2028. Semua nama pada
+            halaman ini adalah data contoh.
+          </p>
+
+          <div class="mt-14 flex flex-col items-center gap-12" id="org"></div>
+
+          <h2 class="font-d font-extrabold text-4xl sm:text-5xl mt-24">
+            Guru dan staf
+          </h2>
+          <div
+            id="staff"
+            class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-8"
+          ></div>
+
+          <div class="grid md:grid-cols-2 gap-6 mt-24">
+            <div
+              class="pop rounded-[2rem] p-8"
+              style="background: #ff8fc7; color: #1b1464"
+            >
+              <h2 class="font-d font-extrabold text-3xl">Visi</h2>
+              <p class="mt-3 text-lg">
+                Menjadi sekolah yang melahirkan pembelajar mandiri, berkarakter,
+                dan berdampak bagi lingkungannya.
+              </p>
+            </div>
+            <div class="pop rounded-[2rem] p-8">
+              <h2 class="font-d font-extrabold text-3xl">Misi</h2>
+              <ul class="mt-3 space-y-2 list-disc pl-5">
+                <li>Menghadirkan pembelajaran berbasis proyek.</li>
+                <li>Membangun budaya jujur, hormat, dan peduli.</li>
+                <li>Membuka kerja sama dengan kampus dan dunia usaha.</li>
+                <li>Menjaga sekolah tetap aman dan ramah bagi semua.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h2 class="font-d font-extrabold text-4xl sm:text-5xl mt-24">
+            Perjalanan kami
+          </h2>
+          <div id="timeline" class="relative tline mt-8 space-y-6 pb-4"></div>
+        </div>
+      </section>
+
+      <!-- ============ GALERI ============ -->
+      <section id="galeri" class="page">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-10">
+          <h1
+            class="font-d font-extrabold text-[clamp(2.8rem,8vw,6rem)] leading-[.92]"
+          >
+            Galeri
+            <span
+              class="inline-block bg-tang dark-ink px-3 rounded-2xl rotate-1 border-[3px] border-ink"
+              >momen</span
+            >
+            sekolah
+          </h1>
+          <p class="mt-5 text-lg max-w-xl opacity-90">
+            Foto asli menyusul. Untuk sekarang, setiap kotak adalah tempat foto
+            kegiatan. Klik untuk memperbesar.
+          </p>
+          <div
+            id="chips"
+            class="flex flex-wrap gap-3 mt-8"
+            role="group"
+            aria-label="Filter kategori"
+          ></div>
+          <div id="grid" class="masonry mt-8"></div>
+        </div>
+      </section>
+
+      <!-- ============ KONTAK ============ -->
+      <section id="kontak" class="page">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-10">
+          <h1
+            class="font-d font-extrabold text-[clamp(2.8rem,8vw,6rem)] leading-[.92]"
+          >
+            Ada yang mau
+            <span
+              class="inline-block bg-lemon dark-ink px-3 rounded-2xl -rotate-1 border-[3px] border-ink"
+              >ditanyakan?</span
+            >
+          </h1>
+          <div class="grid lg:grid-cols-5 gap-6 mt-10">
+            <form
+              id="form"
+              class="pop rounded-[2rem] p-7 sm:p-9 lg:col-span-3 grid gap-5"
+              novalidate
+            >
+              <label class="grid gap-1.5 font-bold"
+                >Nama lengkap<input
+                  required
+                  name="n"
+                  class="rounded-2xl border-2 border-ink bg-bg px-4 py-3 font-normal"
+                  placeholder="Contoh: Rina Maharani"
+              /></label>
+              <label class="grid gap-1.5 font-bold"
+                >Email<input
+                  required
+                  type="email"
+                  name="e"
+                  class="rounded-2xl border-2 border-ink bg-bg px-4 py-3 font-normal"
+                  placeholder="nama@email.com"
+              /></label>
+              <label class="grid gap-1.5 font-bold"
+                >Topik<select
+                  name="t"
+                  class="rounded-2xl border-2 border-ink bg-bg px-4 py-3 font-normal"
+                >
+                  <option>Pendaftaran siswa baru</option>
+                  <option>Kunjungan sekolah</option>
+                  <option>Kerja sama</option>
+                  <option>Lainnya</option>
+                </select></label
+              >
+              <label class="grid gap-1.5 font-bold"
+                >Pesan<textarea
+                  required
+                  name="m"
+                  rows="4"
+                  class="rounded-2xl border-2 border-ink bg-bg px-4 py-3 font-normal"
+                  placeholder="Tulis pertanyaanmu di sini"
+                ></textarea>
+              </label>
+              <p id="err" class="hidden font-bold text-red-600" role="alert">
+                Lengkapi nama, email yang valid, dan pesan dulu ya.
+              </p>
+              <button class="btn bg-tang justify-center" type="submit">
+                Kirim pesan
+              </button>
+            </form>
+            <div class="lg:col-span-2 grid gap-5 content-start">
+              <div
+                class="pop rounded-[2rem] p-6"
+                style="background: #7ee8c7; color: #1b1464"
+              >
+                <p class="font-d font-extrabold text-2xl">
+                  Jl. Pendidikan No. 17
+                </p>
+                <p>Kebumen, Jawa Tengah 54312</p>
+                <p class="mt-3 font-bold">(0287) 555-0142</p>
+                <p class="font-bold">halo@nusantaracendekia.sch.id</p>
+              </div>
+              <div class="pop rounded-[2rem] overflow-hidden">
+                <svg
+                  viewBox="0 0 400 220"
+                  class="w-full block"
+                  role="img"
+                  aria-label="Peta sederhana lokasi sekolah"
+                >
+                  <rect width="400" height="220" fill="#7ee8c7" />
+                  <path d="M0 150 L400 90" stroke="#fff" stroke-width="22" />
+                  <path d="M130 0 L210 220" stroke="#fff" stroke-width="16" />
+                  <path
+                    d="M0 40 C120 60 220 20 400 50"
+                    stroke="#3db0ff"
+                    stroke-width="14"
+                    fill="none"
+                  />
+                  <rect
+                    x="250"
+                    y="130"
+                    width="60"
+                    height="40"
+                    rx="8"
+                    fill="#ffe45c"
+                    stroke="#1b1464"
+                    stroke-width="3"
+                  />
+                  <rect
+                    x="40"
+                    y="100"
+                    width="50"
+                    height="30"
+                    rx="8"
+                    fill="#ff8fc7"
+                    stroke="#1b1464"
+                    stroke-width="3"
+                  />
+                  <g transform="translate(170 78)">
+                    <path
+                      d="M0 0c-16 0-28 12-28 27 0 20 28 43 28 43s28-23 28-43C28 12 16 0 0 0z"
+                      fill="#ff7a1a"
+                      stroke="#1b1464"
+                      stroke-width="4"
+                    />
+                    <circle
+                      cy="27"
+                      r="10"
+                      fill="#fff"
+                      stroke="#1b1464"
+                      stroke-width="3"
+                    />
+                  </g>
+                </svg>
+              </div>
+              <div class="pop rounded-[2rem] p-6">
+                <p class="font-d font-extrabold text-2xl">Jam layanan</p>
+                <p class="mt-2">Senin sampai Jumat, 07.00 sampai 15.00</p>
+                <p>Sabtu, 08.00 sampai 12.00</p>
+              </div>
+            </div>
+          </div>
+          <h2 class="font-d font-extrabold text-4xl mt-20">
+            Pertanyaan yang sering muncul
+          </h2>
+          <div class="grid gap-4 mt-6 max-w-3xl" id="faq"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer
+      class="mt-24 border-t-[3px] border-ink bg-ink"
+      style="background: var(--ink); color: var(--bg)"
+    >
+      <div
+        class="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex flex-wrap justify-between gap-4 items-center"
+      >
+        <p class="font-d font-extrabold text-2xl">SMA Nusantara Cendekia</p>
+        <p class="text-sm opacity-80">
+          Situs contoh dengan data fiktif. Tahun ajaran 2026/2027.
+        </p>
+      </div>
+    </footer>
+
+    <div
+      id="lb"
+      class="hidden fixed inset-0 z-[70] bg-black/60 p-4 place-items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Pratinjau foto"
+    >
+      <div
+        id="lbBox"
+        class="pop rounded-[2rem] w-full max-w-xl overflow-hidden"
+      >
+        <div id="lbArt" class="h-72 grid place-items-center text-8xl"></div>
+        <div class="p-6">
+          <h3 id="lbT" class="font-d font-extrabold text-2xl"></h3>
+          <p id="lbD" class="mt-1"></p>
+          <button id="lbX" class="btn bg-lemon mt-5">Tutup</button>
+        </div>
+      </div>
+    </div>
+    <div
+      id="toast"
+      class="fixed left-1/2 -translate-x-1/2 bottom-6 z-[80] pop-s rounded-full px-6 py-3 font-bold bg-mint opacity-0 pointer-events-none"
+      style="background: #7ee8c7; color: #1b1464"
+      role="status"
+    ></div>
+
+    <script>
+      const $ = (s, r = document) => r.querySelector(s),
+        $$ = (s, r = document) => [...r.querySelectorAll(s)];
+      const reduce = matchMedia("(prefers-reduced-motion:reduce)").matches;
+      const C = ["#ff7a1a", "#ff8fc7", "#ffe45c", "#7ee8c7"];
+
+      /* data contoh */
+      const stats = [
+        ["Siswa aktif", 1248, "👩‍🎓"],
+        ["Guru dan staf", 86, "🧑‍🏫"],
+        ["Prestasi tahun ini", 94, "🏅"],
+        ["Alumni di PTN", 412, "🎓"],
+      ];
+      $("#mq").innerHTML = Array(2)
+        .fill(
+          [
+            "Belajar berani",
+            "Berkarya nyata",
+            "Tumbuh bersama",
+            "Juara tanpa takut gagal",
+          ]
+            .map((t) => `<span>${t}</span><span class="text-tang">✺</span>`)
+            .join(""),
+        )
+        .join("");
+      $("#stats").innerHTML = stats
+        .map(
+          (s, i) =>
+            `<div class="pop lift rounded-3xl p-5" style="background:${i % 2 ? "var(--card)" : C[i]};${i % 2 ? "" : "color:#1b1464"}"><div class="text-3xl">${s[2]}</div><p class="font-d font-extrabold text-5xl mt-2 count" data-to="${s[1]}">0</p><p class="font-bold">${s[0]}</p></div>`,
+        )
+        .join("");
+      $("#agenda").innerHTML = [
+        ["12", "Des", "Pentas Seni Akhir Tahun"],
+        ["04", "Jan", "Hari pertama semester genap"],
+        ["21", "Jan", "Open house untuk calon siswa"],
+        ["10", "Feb", "Pekan Sains dan Teknologi"],
+      ]
+        .map(
+          (a, i) =>
+            `<div class="pop-s lift flex gap-4 items-center rounded-2xl p-3 bg-card"><div class="w-16 h-16 rounded-xl border-2 border-ink grid place-items-center text-center leading-none dark-ink" style="background:${C[i]}"><div><b class="font-d text-2xl">${a[0]}</b><br><span class="text-xs font-bold">${a[1]}</span></div></div><p class="font-bold">${a[2]}</p></div>`,
+        )
+        .join("");
+
+      const staff = [
+        ["Dra. Hesti Sulistyowati, M.Pd.", "Kepala Sekolah"],
+        ["Budi Santoso, S.Pd.", "Wakasek Kurikulum"],
+        ["Ratna Wulandari, S.Si.", "Wakasek Kesiswaan"],
+        ["Agus Prasetyo, M.T.", "Wakasek Sarpras"],
+        ["Dewi Anggraini, S.S.", "Guru Bahasa Inggris"],
+        ["Fajar Nugroho, S.Kom.", "Guru Informatika"],
+        ["Lestari Putri, S.Sn.", "Guru Seni Budaya"],
+        ["Yoga Pratama, S.Or.", "Guru PJOK"],
+      ];
+      const ini = (n) =>
+        n
+          .replace(/(Dra\.|S\.\w+|M\.\w+|,)/g, "")
+          .trim()
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((w) => w[0])
+          .join("");
+      const card = (p, i, big) =>
+        `<div class="pop lift rounded-3xl p-5 ${big ? "w-72 text-center" : ""}"><div class="${big ? "mx-auto w-20 h-20 text-3xl" : "w-14 h-14 text-xl"} rounded-full border-[3px] border-ink grid place-items-center font-d font-extrabold dark-ink" style="background:${C[i % 4]}">${ini(p[0])}</div><p class="font-bold mt-3 leading-tight">${p[0]}</p><p class="text-sm opacity-75">${p[1]}</p></div>`;
+      $("#org").innerHTML =
+        `<div>${card(staff[0], 0, 1)}</div><div class="flex flex-wrap justify-center gap-6">${staff
+          .slice(1, 4)
+          .map((p, i) => `<div class="org-line">${card(p, i + 1, 1)}</div>`)
+          .join("")}</div>`;
+      $("#staff").innerHTML = staff
+        .slice(1)
+        .concat([["Siti Aminah, S.E.", "Kepala Tata Usaha"]])
+        .map((p, i) => card(p, i))
+        .join("");
+      $("#timeline").innerHTML = [
+        ["2004", "Sekolah berdiri dengan 3 rombel dan 96 siswa pertama."],
+        ["2014", "Meraih akreditasi A dan membuka laboratorium sains."],
+        ["2020", "Pembelajaran hibrida dan program koding dimulai."],
+        ["2026", "Juara nasional olimpiade sains terapan."],
+      ]
+        .map(
+          (t, i) =>
+            `<div class="relative pl-14"><div class="absolute left-0 top-0 w-10 h-10 rounded-full border-[3px] border-ink dark-ink grid place-items-center font-bold text-xs" style="background:${C[i]}">${t[0].slice(2)}</div><div class="pop-s rounded-2xl p-4 bg-card"><p class="font-d font-extrabold text-xl">${t[0]}</p><p>${t[1]}</p></div></div>`,
+        )
+        .join("");
+      $("#faq").innerHTML = [
+        [
+          "Kapan pendaftaran ditutup?",
+          "Gelombang 1 ditutup 28 Februari 2027, gelombang 2 pada 30 April 2027.",
+        ],
+        [
+          "Apakah ada beasiswa?",
+          "Ada. Tersedia beasiswa prestasi akademik, non-akademik, dan bantuan untuk keluarga kurang mampu.",
+        ],
+        [
+          "Bisakah berkunjung sebelum mendaftar?",
+          "Bisa. Datang saat open house atau buat janji lewat formulir di atas.",
+        ],
+      ]
+        .map(
+          (f) =>
+            `<details class="pop-s rounded-2xl bg-card p-5 group"><summary class="font-bold cursor-pointer">${f[0]}</summary><p class="mt-2">${f[1]}</p></details>`,
+        )
+        .join("");
+
+      const gal = [
+        ["Upacara Senin pagi", "Kegiatan", "🇮🇩", 220],
+        ["Juara olimpiade sains", "Prestasi", "🏆", 300],
+        ["Laboratorium komputer", "Fasilitas", "🖥️", 260],
+        ["Pentas teater siswa", "Seni", "🎭", 320],
+        ["Turnamen futsal antar kelas", "Kegiatan", "⚽", 240],
+        ["Medali lomba robotik", "Prestasi", "🤖", 280],
+        ["Perpustakaan baru", "Fasilitas", "📚", 320],
+        ["Workshop melukis mural", "Seni", "🎨", 240],
+        ["Kemah bakti sosial", "Kegiatan", "⛺", 300],
+        ["Juara debat bahasa Inggris", "Prestasi", "🎤", 230],
+        ["Studio musik", "Fasilitas", "🎸", 270],
+        ["Paduan suara angkatan 2026", "Seni", "🎶", 250],
+      ];
+      let cat = "Semua";
+      const cats = ["Semua", "Kegiatan", "Prestasi", "Fasilitas", "Seni"];
+      function drawGal() {
+        $("#chips").innerHTML = cats
+          .map(
+            (c) =>
+              `<button class="chip pop-s rounded-full px-5 py-2 font-bold ${c === cat ? "on" : "bg-card"}" data-c="${c}">${c}</button>`,
+          )
+          .join("");
+        $("#grid").innerHTML = gal
+          .map((g, i) => ({ g, i }))
+          .filter((o) => cat === "Semua" || o.g[1] === cat)
+          .map(
+            ({ g, i }) =>
+              `<button class="g pop lift rounded-3xl overflow-hidden w-full text-left block" data-i="${i}"><div class="grid place-items-center text-7xl stripe" style="height:${g[3]}px;background-color:${C[i % 4]}">${g[2]}</div><div class="p-4"><p class="font-bold">${g[0]}</p><p class="text-sm opacity-75">${g[1]}</p></div></button>`,
+          )
+          .join("");
+        if (!reduce)
+          gsap.from("#grid .g", {
+            scale: 0.92,
+            opacity: 0,
+            duration: 0.35,
+            stagger: 0.04,
+            ease: "back.out(1.6)",
+          });
+      }
+      $("#chips").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-c]");
+        if (b) {
+          cat = b.dataset.c;
+          drawGal();
+        }
+      });
+      $("#grid").addEventListener("click", (e) => {
+        const b = e.target.closest(".g");
+        if (!b) return;
+        const g = gal[b.dataset.i];
+        $("#lbArt").style.background = C[b.dataset.i % 4];
+        $("#lbArt").textContent = g[2];
+        $("#lbT").textContent = g[0];
+        $("#lbD").textContent =
+          "Kategori " + g[1] + ". Ganti dengan foto asli sekolah.";
+        const lb = $("#lb");
+        lb.classList.remove("hidden");
+        lb.classList.add("grid");
+        if (!reduce) gsap.from("#lbBox", { y: 40, opacity: 0, duration: 0.3 });
+        $("#lbX").focus();
+      });
+      const closeLb = () => {
+        $("#lb").classList.add("hidden");
+        $("#lb").classList.remove("grid");
+      };
+      $("#lbX").onclick = closeLb;
+      $("#lb").onclick = (e) => {
+        if (e.target.id === "lb") closeLb();
+      };
+      addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeLb();
+      });
+
+      /* form */
+      const toast = (m) => {
+        const t = $("#toast");
+        t.textContent = m;
+        gsap.fromTo(
+          t,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.3 },
+        );
+        gsap.to(t, { opacity: 0, delay: 2.6, duration: 0.3 });
+      };
+      $("#form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const f = e.target,
+          ok =
+            f.n.value.trim() &&
+            /\S+@\S+\.\S+/.test(f.e.value) &&
+            f.m.value.trim();
+        $("#err").classList.toggle("hidden", !!ok);
+        if (ok) {
+          f.reset();
+          toast("Pesan terkirim. Kami balas dalam 1 hari kerja.");
+        }
+      });
+
+      /* jam sekolah */
+      function clock() {
+        const d = new Date(),
+          h = d.getHours(),
+          m = d.getMinutes(),
+          t = h * 60 + m;
+        $("#clockTime").textContent =
+          String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+        const s = [
+          [420, "Apel pagi dan literasi"],
+          [450, "Jam pelajaran 1 sampai 3"],
+          [600, "Istirahat pertama"],
+          [615, "Jam pelajaran 4 sampai 6"],
+          [735, "Salat dan istirahat kedua"],
+          [780, "Jam pelajaran 7 sampai 9"],
+          [900, "Ekstrakurikuler"],
+        ];
+        let msg = "Sekolah sedang tutup. Sampai jumpa besok!";
+        if (t >= 420 && t < 1020) {
+          for (const x of s) if (t >= x[0]) msg = x[1];
+        }
+        $("#clockInfo").textContent = msg;
+      }
+      clock();
+      setInterval(clock, 20000);
+
+      /* nav + router */
+      $("#burger").onclick = () => {
+        const m = $("#mobmenu"),
+          o = m.classList.toggle("hidden");
+        $("#burger").setAttribute("aria-expanded", String(!o));
+      };
+      let first = true;
+      function route() {
+        let id = location.hash.slice(1);
+        if (!["beranda", "struktur", "galeri", "kontak"].includes(id))
+          id = "beranda";
+        $$(".page").forEach((p) => p.classList.toggle("on", p.id === id));
+        $$(".navlink").forEach((a) =>
+          a.classList.toggle("on", a.getAttribute("href") === "#" + id),
+        );
+        $("#mobmenu").classList.add("hidden");
+        scrollTo(0, 0);
+        document.title =
+          {
+            beranda: "Beranda",
+            struktur: "Struktur Organisasi",
+            galeri: "Galeri",
+            kontak: "Kontak",
+          }[id] + " | SMA Nusantara Cendekia";
+        if (id === "galeri") drawGal();
+        if (id === "beranda") {
+          $$(".count").forEach((el) => {
+            const to = +el.dataset.to;
+            if (reduce) {
+              el.textContent = to.toLocaleString("id-ID");
+              return;
+            }
+            const o = { v: 0 };
+            gsap.to(o, {
+              v: to,
+              duration: 1.6,
+              delay: 0.5,
+              ease: "power2.out",
+              onUpdate: () =>
+                (el.textContent = Math.round(o.v).toLocaleString("id-ID")),
+            });
+          });
+          if (first && !reduce) {
+            const tl = gsap.timeline();
+            tl.from(".h-in", {
+              y: 50,
+              opacity: 0,
+              duration: 0.6,
+              stagger: 0.12,
+              ease: "power3.out",
+            }).from(
+              ".h-card",
+              {
+                scale: 0.4,
+                rotate: -25,
+                opacity: 0,
+                duration: 0.7,
+                stagger: 0.14,
+                ease: "back.out(1.8)",
+              },
+              "-=.5",
+            );
+          }
+          first = false;
+        } else if (!reduce) {
+          gsap.from("#" + id + " h1", {
+            y: 40,
+            opacity: 0,
+            duration: 0.5,
+            ease: "power3.out",
+          });
+        }
+      }
+      addEventListener("hashchange", route);
+      route();
+    </script>
+  </body>
+</html>
